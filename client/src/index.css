@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+/* Same fonts and colors as the old tailwind.config.cjs (Tailwind 4 reads the theme from CSS). */
+@theme {
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-sans: "Hanken Grotesk", system-ui, sans-serif;
+  --color-paper: #F4F6F5;
+  --color-ink: #14201C;
+  --color-board: #173A31;
+  --color-board-600: #1F4A3E;
+  --color-board-100: #DCEAE5;
+  --color-board-50: #EEF4F2;
+  --color-good: #1B7F4B;
+  --color-late: #B7791F;
+  --color-bad: #B42318;
+
+  /* Tailwind 3's exact greys (Tailwind 4 re-encodes them, shifting them by a hair). */
+  --color-slate-50: #f8fafc; --color-slate-100: #f1f5f9; --color-slate-200: #e2e8f0; --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8; --color-slate-500: #64748b; --color-slate-600: #475569; --color-slate-700: #334155;
+  --color-slate-800: #1e293b; --color-slate-900: #0f172a; --color-slate-950: #020617;
+  --color-gray-200: #e5e7eb; --color-gray-400: #9ca3af;
+}
+
+@layer base {
+  /* Tailwind 4 changed a few defaults; these keep the look identical to Tailwind 3. */
+  *, ::after, ::before, ::backdrop, ::file-selector-button { border-color: var(--color-gray-200); }
+  button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
+  input::placeholder, textarea::placeholder { color: var(--color-gray-400); }
+
+  html { -webkit-text-size-adjust: 100%; }
+  body { @apply bg-paper font-sans text-ink antialiased; overflow-x: hidden; }
+  img, svg, video { max-width: 100%; }
+  /* 16px inputs stop iPhones zooming in when a field is tapped */
+  @media (max-width: 767px) { input, select, textarea { font-size: 16px !important; } }
+  h1, h2, h3 { @apply font-display; }
+  :focus-visible { @apply outline-hidden ring-2 ring-board/50 ring-offset-1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* Only the receipt prints */
+@media print {
+  body * { visibility: hidden; }
+  #receipt, #receipt * { visibility: visible; }
+  #receipt { position: absolute; left: 0; top: 0; width: 100%; border: none; }
+  .no-print { display: none !important; }
+}
+
+/* ---------- phones: wide screens become single column, tables become cards ---------- */
+@media (max-width: 639px) {
+  main { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+  /* big headings and numbers a little smaller */
+  main h1 { font-size: 1.35rem; }
+  main .text-5xl { font-size: 2.5rem; }
+  main .text-4xl { font-size: 2rem; }
+  /* filter rows: every control full width */
+  main .flex-wrap > select, main .flex-wrap > input:not([type=checkbox]):not([type=radio]):not([type=file]) { width: 100%; }
+  main .w-44, main .w-40 { width: 100%; }
+  /* tap targets */
+  main button, main select, main input:not([type=checkbox]):not([type=radio]) { min-height: 2.5rem; }
+
+  table.stack { display: block; width: 100%; }
+  table.stack thead { display: none; }
+  table.stack tbody { display: block; }
+  table.stack tbody tr { display: block; margin: 0.6rem; padding: 0.35rem 0.75rem; border: 1px solid var(--color-slate-200); border-radius: 0.5rem; background: #fff; }
+  table.stack tbody tr + tr { border-top-width: 1px; }
+  table.stack td { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.4rem 0 !important; text-align: right; border: 0; }
+  table.stack td + td { border-top: 1px dashed var(--color-slate-100); }
+  table.stack td::before { content: attr(data-label); flex: 0 0 38%; text-align: left; font-size: 0.7rem; font-weight: 600; color: var(--color-slate-500); }
+  table.stack td[data-label=""]::before, table.stack td[colspan]::before { content: none; }
+  table.stack td[colspan] { display: block; text-align: center; }
+  table.stack td > input, table.stack td > select { max-width: 55%; }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  main h1 { font-size: 1.6rem; }
+}
+/* tables that stay as tables scroll sideways inside their own box, never the page */
+.overflow-x-auto { -webkit-overflow-scrolling: touch; }

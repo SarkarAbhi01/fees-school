@@ -1,0 +1,4 @@
+unique_no,rfid_uid,name,class,parent_phone,section,uses_transport,admission_date
+,RFID-1001,Aman Khan,6,9876500001,A,yes,2026-04-05
+,RFID-1002,Bhavna Rathore,6,9876500002,A,no,2026-07-12
+,RFID-1003,Chirag Soni,7,9876500003,B,yes,2026-08-01

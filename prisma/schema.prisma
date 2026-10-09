@@ -1,0 +1,319 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model School {
+  id        String   @id @default(uuid())
+  name      String
+  code      String   @unique
+  is_active Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // profile (added by super admin)
+  address        String @default("")
+  city           String @default("")
+  state          String @default("")
+  pincode        String @default("")
+  mobile         String @default("")
+  email          String @default("")
+  contact_person String @default("")
+
+  // subscription plan (set by super admin)
+  plan_type   String    @default("YEARLY") // MONTHLY | QUARTERLY | HALF_YEARLY | YEARLY
+  plan_amount Int       @default(0)
+  plan_start  DateTime? @db.Date
+  plan_end    DateTime? @db.Date
+
+  // menus the super admin switched off for this school (list of menu keys). Only hides navigation, never blocks the API.
+  disabled_menus Json?
+
+  // fee due date + late fee (set by the school admin)
+  fee_due_day     Int       @default(10)  // fees of a month must be paid on or before this day of that month
+  late_fee_amount Int       @default(0)   // flat late fee per late month (not per fee head). 0 = no late fee
+  late_fee_from   DateTime? @db.Date      // late fee applies only to months whose due date is on/after this date
+
+  // attendance: weekly off days (0 = Sunday ... 6 = Saturday), comma separated
+  weekly_off String @default("0")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String // SUPER_ADMIN, SCHOOL_ADMIN, TEACHER, FEES_COLLECTOR
+  school_id String?
+  createdAt DateTime @default(now())
+
+  @@index([school_id])
+}
+
+model Student {
+  id           String   @id @default(uuid())
+  school_id    String
+  unique_no    String   @unique // main search key for Fees e.g. STU-0001
+  rfid_uid     String   @unique // UHF 12-year card number
+  name         String
+  class        String
+  section      String
+  parent_phone String
+  photo_url    String?
+  uses_transport Boolean @default(false) // transport-only fee heads apply only when true
+  admission_date DateTime? @db.Date // billing starts from this month; null = from start of the financial year
+  is_active    Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  @@index([school_id, class])
+  @@index([school_id, unique_no])
+  @@index([school_id, parent_phone])
+}
+
+model Attendance {
+  id         String    @id @default(uuid())
+  school_id  String
+  student_id String
+  date       DateTime  @db.Date
+  in_time    DateTime?
+  out_time   DateTime?
+  status     String // PRESENT, ABSENT, LATE
+
+  @@unique([student_id, date])
+  @@index([school_id, date])
+}
+
+model AttendanceLog {
+  id        String   @id @default(uuid())
+  school_id String
+  rfid_uid  String
+  scan_time DateTime @default(now())
+
+  @@index([school_id])
+}
+
+// LEGACY (kept so no data is dropped). Replaced by FeeHead + ClassFee; auto-converted at server start.
+model FeeStructure {
+  id               String @id @default(uuid())
+  school_id        String
+  class            String
+  tuition_fee      Int    @default(0)
+  transport_fee    Int    @default(0)
+  library_fee      Int    @default(0)
+  total_annual_fee Int // tuition + transport + library (kept in sync by the API)
+
+  @@unique([school_id, class])
+}
+
+model FeePayment {
+  id             String   @id @default(uuid())
+  school_id      String
+  student_id     String
+  amount_paid    Int
+  pending_amount Int
+  payment_mode   String
+  fee_type       String   @default("TUITION") // LEGACY, unused now (see FeePaymentLine)
+  fy             Int      @default(0) // financial year start, e.g. 2026 = Apr 2026 - Mar 2027
+  billing_mode   String   @default("MONTHLY") // MONTHLY | QUARTERLY | HALF_YEARLY | YEARLY
+  months         Int      @default(0) // months paid in this receipt (MONTHLY mode)
+  discount_amount Int     @default(0) // "other" discount given on the spot in this receipt
+  collected_by   String?
+  reprint_count  Int      @default(0) // how many duplicate copies were printed
+  receipt_no     String   @unique
+  payment_date   DateTime @default(now())
+
+  @@index([school_id, student_id])
+  @@index([school_id, payment_date])
+}
+
+// A fee head the school defines: Tuition, Transport, Library, Exam, ...
+model FeeHead {
+  id             String   @id @default(uuid())
+  school_id      String
+  name           String
+  transport_only Boolean  @default(false) // charged only to students who use transport
+  is_active      Boolean  @default(true)
+  createdAt      DateTime @default(now())
+
+  @@unique([school_id, name])
+}
+
+// Amount of one head for one class. MONTHLY = per month (x12 a year), YEARLY = per year.
+model ClassFee {
+  id        String @id @default(uuid())
+  school_id String
+  class     String
+  head_id   String
+  amount    Int // per period (CUSTOM: total of all installments)
+  period    String @default("YEARLY") // MONTHLY | QUARTERLY | HALF_YEARLY | YEARLY | CUSTOM
+  installments Json? // CUSTOM only: [{ label, month (0 = Apr ... 11 = Mar), amount }], e.g. exam-wise fees
+
+  @@unique([school_id, class, head_id])
+  @@index([school_id, class])
+}
+
+// Admin-defined discount (percent or flat), optionally limited to one head
+model Discount {
+  id        String   @id @default(uuid())
+  school_id String
+  name      String
+  type      String // PERCENT | FLAT
+  value     Int
+  head_id   String? // null = all heads (PERCENT only)
+  is_active Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@unique([school_id, name])
+}
+
+// Special fee for ONE student; replaces the class amount for that head.
+// amount 0 = this student is exempt from that head.
+model StudentFee {
+  id         String   @id @default(uuid())
+  school_id  String
+  student_id String
+  head_id    String
+  amount     Int
+  period     String   @default("YEARLY") // MONTHLY | QUARTERLY | HALF_YEARLY | YEARLY | CUSTOM
+  installments Json? // CUSTOM only (see ClassFee)
+  note       String   @default("")
+  set_by     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([student_id, head_id])
+  @@index([school_id])
+}
+
+// Admin assigns a discount to a student (tracked: who and when)
+model StudentDiscount {
+  id          String   @id @default(uuid())
+  school_id   String
+  student_id  String
+  discount_id String
+  assigned_by String
+  createdAt   DateTime @default(now())
+
+  @@unique([student_id, discount_id])
+  @@index([school_id])
+}
+
+// "Other" discount a fee collector gives on the spot (tracked: who, why, when)
+model DiscountEntry {
+  id            String   @id @default(uuid())
+  school_id     String
+  student_id    String
+  fy            Int
+  head_id       String
+  kind          String   @default("OTHER")
+  amount        Int
+  reason        String
+  given_by      String
+  given_by_name String
+  payment_id    String?
+  month_idx     Int?
+  createdAt     DateTime @default(now())
+
+  @@index([school_id, student_id, fy])
+  @@index([school_id, fy])
+}
+
+// One row per fee head inside a receipt
+model FeePaymentLine {
+  id         String @id @default(uuid())
+  school_id  String
+  payment_id String
+  student_id String
+  fy         Int
+  head_id    String
+  head_name  String
+  amount     Int
+  month_idx  Int? // fee month this line was paid for (0 = Apr ... 11 = Mar). null = old receipt, applied oldest month first
+
+  @@index([school_id, student_id, fy])
+  @@index([payment_id])
+}
+
+// PostgreSQL-backed queue (no Redis / BullMQ)
+model JobQueue {
+  id         String   @id @default(uuid())
+  school_id  String?
+  type       String // WHATSAPP, RECEIPT
+  payload    Json
+  status     String   @default("PENDING") // PENDING, PROCESSING, DONE, FAILED
+  attempts   Int      @default(0)
+  last_error String?
+  run_at     DateTime @default(now())
+  createdAt  DateTime @default(now())
+
+  @@index([status, run_at])
+}
+
+// Which months a fee head is collected. Most specific wins: STUDENT > CLASS > SCHOOL > all 12 months.
+model FeeMonthMap {
+  id         String   @id @default(uuid())
+  school_id  String
+  fy         Int
+  scope      String // SCHOOL | CLASS | STUDENT
+  class      String   @default("")
+  student_id String   @default("")
+  head_id    String
+  months     Json // 12 booleans, index 0 = April ... 11 = March. false = nothing is charged for that head in that month
+  set_by     String   @default("")
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@unique([school_id, fy, scope, class, student_id, head_id])
+  @@index([school_id, fy])
+}
+
+model Holiday {
+  id        String   @id @default(uuid())
+  school_id String
+  date      DateTime @db.Date
+  name      String   @default("Holiday")
+  createdAt DateTime @default(now())
+
+  @@unique([school_id, date])
+}
+
+// One row per backup scope: a school (its own data) or PLATFORM (everything, super admin only)
+model BackupConfig {
+  id          String    @id @default(uuid())
+  scope       String    @unique // "PLATFORM" or the school id
+  school_id   String?
+  frequency   String    @default("OFF") // OFF | DAILY | WEEKLY | MONTHLY | YEARLY
+  run_time    String    @default("02:00") // school-time HH:MM
+  range       String    @default("ALL") // ALL | DAY | WEEK | MONTH | YEAR : time window for attendance + payments
+  datasets    Json? // list of dataset keys for Excel / JSON
+  make_excel  Boolean   @default(true)
+  make_json   Boolean   @default(true)
+  make_bak    Boolean   @default(true)
+  to_drive    Boolean   @default(false)
+  keep_last   Int       @default(30) // old automatic backups beyond this many are deleted
+  last_run_at DateTime?
+  last_status String    @default("")
+  last_error  String    @default("")
+  updatedAt   DateTime  @default(now()) @updatedAt
+}
+
+model BackupFile {
+  id           String   @id @default(uuid())
+  scope        String
+  school_id    String?
+  kind         String // EXCEL | JSON | BAK
+  file_name    String
+  size         Int      @default(0)
+  period       String   @default("MANUAL") // MANUAL | DAILY | WEEKLY | MONTHLY | YEARLY
+  trigger      String   @default("MANUAL") // MANUAL | AUTO
+  created_by   String   @default("")
+  drive_status String   @default("NONE") // NONE | UPLOADED | FAILED
+  drive_id     String?
+  drive_error  String   @default("")
+  createdAt    DateTime @default(now())
+
+  @@index([scope, createdAt])
+}

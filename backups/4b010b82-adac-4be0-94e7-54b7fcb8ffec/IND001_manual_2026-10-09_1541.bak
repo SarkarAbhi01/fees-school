@@ -1,0 +1,93 @@
+-- School ERP backup 2026-10-09T10:11:38.138Z | scope: 4b010b82-adac-4be0-94e7-54b7fcb8ffec
+-- Restore into a database created with "npm run db:deploy":  psql "<DATABASE_URL>" -f this_file.bak
+BEGIN;
+INSERT INTO "School" ("id", "name", "code", "is_active", "createdAt", "updatedAt", "address", "city", "state", "pincode", "mobile", "email", "contact_person", "plan_type", "plan_amount", "plan_start", "plan_end", "disabled_menus", "fee_due_day", "late_fee_amount", "late_fee_from", "weekly_off") VALUES
+('4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'Demo School', 'IND001', true, '2026-10-09T10:08:49.414Z', '2026-10-09T10:08:49.414Z', '', '', '', '', '', '', '', 'YEARLY', 0, NULL, NULL, NULL, 10, 0, NULL, '0')
+ON CONFLICT DO NOTHING;
+INSERT INTO "User" ("id", "name", "email", "password", "role", "school_id", "createdAt") VALUES
+('489325eb-713e-4c60-a535-ab67ea74dbda', 'Demo Admin', 'admin@demo.com', '$2a$10$naCqINKZHvIYxJDJvuDkg.ZbxCwfjzxaCx/Q/DtiKrPv1PtrDwTsG', 'SCHOOL_ADMIN', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '2026-10-09T10:08:49.419Z'),
+('7b722102-1753-48d8-ab01-6c877987b582', 'Demo Fees Collector', 'collector@demo.com', '$2a$10$naCqINKZHvIYxJDJvuDkg.ZbxCwfjzxaCx/Q/DtiKrPv1PtrDwTsG', 'FEES_COLLECTOR', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '2026-10-09T10:08:49.422Z')
+ON CONFLICT DO NOTHING;
+INSERT INTO "Student" ("id", "school_id", "unique_no", "rfid_uid", "name", "class", "section", "parent_phone", "photo_url", "uses_transport", "admission_date", "is_active", "createdAt") VALUES
+('092a03b3-3ae6-4d82-8248-bfb805d4df49', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'STU-0016', 'RFID-0016', 'Harsh Tiwari', '1', 'B', '9876543215', NULL, false, NULL, true, '2026-10-09T10:08:49.551Z'),
+('2540e033-bff7-4e3b-bc9f-357252c176c8', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'STU-0010', 'RFID-0010', 'Arjun Nair', '5', 'B', '9876543209', NULL, false, '2026-07-01T00:00:00.000Z', true, '2026-10-09T10:08:49.551Z'),
+('29183851-e821-47a0-9de2-a89f791e11d6', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'STU-0011', 'RFID-0011', 'Meera Iyer', '1', 'A', '9876543210', NULL, true, NULL, true, '2026-10-09T10:08:49.551Z'),
+('4d39cc44-ea84-4a54-800f-e76ffb213585', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'STU-0009', 'RFID-0009', 'Saanvi Rao', '4', 'A', '9876543208', NULL, true, NULL, true, '2026-10-09T10:08:49.551Z'),
+('6c86ae1f-f831-4d84-a506-acd2e438e960', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'STU-0018', 'RFID-0018', 'Dev Saxena', '3', 'B', '9876543217', NULL, false, NULL, true, '2026-10-09T10:08:49.551Z'),
+('7191baf7-f948-40e2-a4da-f737ec44c978', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'STU-0001', 'RFID-0001', 'Neeraj Sharma', '1', 'A', '9876543200', NULL, true, NULL, true, '2026-10-09T10:08:49.551Z'),
+('71f07cfe-b9bf-451c-a697-9c622130426c', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'STU-0017', 'RFID-0017', 'Pooja Mishra', '2', 'A', '9876543216', NULL, true, NULL, true, '2026-10-09T10:08:49.551Z'),
+('8cb08e4b-ed1b-4447-9bed-4b06b65ca948', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'STU-0019', 'RFID-0019', 'Nisha Kapoor', '4', 'A', '9876543218', NULL, true, NULL, true, '2026-10-09T10:08:49.551Z'),
+('970e9765-1d91-4cd7-9c60-5ff52fe51fb7', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'STU-0014', 'RFID-0014', 'Yash Chauhan', '4', 'B', '9876543213', NULL, false, NULL, true, '2026-10-09T10:08:49.551Z'),
+('a8bd12fe-4d91-4899-816e-6f8d0da4238c', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'STU-0003', 'RFID-0003', 'Diya Patel', '3', 'A', '9876543202', NULL, true, NULL, true, '2026-10-09T10:08:49.551Z'),
+('b44a8bbc-a445-4358-8af2-5a627613f51a', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'STU-0020', 'RFID-0020', 'Rahul Dubey', '5', 'B', '9876543219', NULL, false, '2026-07-01T00:00:00.000Z', true, '2026-10-09T10:08:49.551Z'),
+('b5d290f0-3e51-44c7-b152-45a9b81a8c09', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'STU-0002', 'RFID-0002', 'Aarav Verma', '2', 'B', '9876543201', NULL, false, NULL, true, '2026-10-09T10:08:49.551Z'),
+('bbfceac1-816e-48e7-9e0c-e4e2e0caf330', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'STU-0006', 'RFID-0006', 'Vivaan Joshi', '1', 'B', '9876543205', NULL, false, NULL, true, '2026-10-09T10:08:49.551Z'),
+('bec6fd09-1c09-48d6-bc8e-e4be96bab7ef', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'STU-0007', 'RFID-0007', 'Isha Mehta', '2', 'A', '9876543206', NULL, true, NULL, true, '2026-10-09T10:08:49.551Z'),
+('c08355ea-b0c2-4b33-8ace-dc8f0cb3fdcf', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'STU-0004', 'RFID-0004', 'Rohan Gupta', '4', 'B', '9876543203', NULL, false, NULL, true, '2026-10-09T10:08:49.551Z'),
+('cdcfdc98-f5e4-4f1e-b352-b5f8471a6ed0', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'STU-0012', 'RFID-0012', 'Aditya Jain', '2', 'B', '9876543211', NULL, false, NULL, true, '2026-10-09T10:08:49.551Z'),
+('d16ceed2-ca6f-4b97-9a5d-2f79d6d4f0c3', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'STU-0005', 'RFID-0005', 'Ananya Singh', '5', 'A', '9876543204', NULL, true, '2026-07-01T00:00:00.000Z', true, '2026-10-09T10:08:49.551Z'),
+('e77561c9-a9e5-43a8-b5e9-fb8f7d8664cb', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'STU-0008', 'RFID-0008', 'Kabir Yadav', '3', 'B', '9876543207', NULL, false, NULL, true, '2026-10-09T10:08:49.551Z'),
+('f359e14c-a0fb-484b-ab0b-37cfca4a5480', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'STU-0015', 'RFID-0015', 'Riya Malhotra', '5', 'A', '9876543214', NULL, true, '2026-07-01T00:00:00.000Z', true, '2026-10-09T10:08:49.551Z'),
+('f66ed42e-18db-43fb-a916-3cabf14725a8', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'STU-0013', 'RFID-0013', 'Kavya Reddy', '3', 'A', '9876543212', NULL, true, NULL, true, '2026-10-09T10:08:49.551Z')
+ON CONFLICT DO NOTHING;
+INSERT INTO "FeeHead" ("id", "school_id", "name", "transport_only", "is_active", "createdAt") VALUES
+('1d572bf4-d192-4aa9-b60b-3e61736ad9b5', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'Library fee', false, true, '2026-10-09T10:08:49.431Z'),
+('5e49a13e-463a-41b7-b68c-d0dd75b46f5e', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'Tuition fee', false, true, '2026-10-09T10:08:49.424Z'),
+('e10325e4-b358-4908-8839-88cd645e5d04', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'Exam fee', false, true, '2026-10-09T10:08:49.432Z'),
+('f10afa70-07cd-455f-989a-db1225dd011c', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'Transport fee', true, true, '2026-10-09T10:08:49.428Z')
+ON CONFLICT DO NOTHING;
+INSERT INTO "ClassFee" ("id", "school_id", "class", "head_id", "amount", "period", "installments") VALUES
+('0485b7e9-fcdc-4fee-b18a-b11bab4dce2b', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '6', '5e49a13e-463a-41b7-b68c-d0dd75b46f5e', 1500, 'MONTHLY', NULL),
+('12282733-5c5b-4a9f-a5fe-ecd92bbbd77d', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '5', '5e49a13e-463a-41b7-b68c-d0dd75b46f5e', 1500, 'MONTHLY', NULL),
+('1244bce4-9b33-4ef6-855a-b27e651cd83f', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '11', 'e10325e4-b358-4908-8839-88cd645e5d04', 450, 'CUSTOM', '[{"label":"Unit test 1","month":2,"amount":100},{"label":"Half-yearly exam","month":5,"amount":150},{"label":"Unit test 2","month":8,"amount":100},{"label":"Unit test 3","month":11,"amount":100}]'::jsonb),
+('14a911dc-f936-409c-b7b9-78d46f12cd04', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '7', 'f10afa70-07cd-455f-989a-db1225dd011c', 300, 'MONTHLY', NULL),
+('1b1f9f43-7f64-46c8-b2e6-af116c06ebb3', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '3', '5e49a13e-463a-41b7-b68c-d0dd75b46f5e', 1500, 'MONTHLY', NULL),
+('20504337-7a78-498e-a79d-a196944c7293', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '9', '1d572bf4-d192-4aa9-b60b-3e61736ad9b5', 150, 'QUARTERLY', NULL),
+('256578fd-f952-40bb-8f5d-ceae81c63eda', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '12', '5e49a13e-463a-41b7-b68c-d0dd75b46f5e', 1500, 'MONTHLY', NULL),
+('34d77552-d3d5-4682-8275-c2431dc7c9b9', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '7', 'e10325e4-b358-4908-8839-88cd645e5d04', 450, 'CUSTOM', '[{"label":"Unit test 1","month":2,"amount":100},{"label":"Half-yearly exam","month":5,"amount":150},{"label":"Unit test 2","month":8,"amount":100},{"label":"Unit test 3","month":11,"amount":100}]'::jsonb),
+('3ed87fa7-b5af-4ea0-9ecb-447cf74bf1f9', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '1', '1d572bf4-d192-4aa9-b60b-3e61736ad9b5', 150, 'QUARTERLY', NULL),
+('4639d90c-3df4-406b-8864-e033bdca319e', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '10', '5e49a13e-463a-41b7-b68c-d0dd75b46f5e', 1500, 'MONTHLY', NULL),
+('5013b08d-8c0f-4a87-a014-bed66ee081f7', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '12', 'f10afa70-07cd-455f-989a-db1225dd011c', 300, 'MONTHLY', NULL),
+('5569ebe6-ba68-4dc5-a514-39285bdad7b4', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '12', '1d572bf4-d192-4aa9-b60b-3e61736ad9b5', 150, 'QUARTERLY', NULL),
+('5c098688-5631-41a3-a1c0-a46ba1c0a42b', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '3', 'e10325e4-b358-4908-8839-88cd645e5d04', 450, 'CUSTOM', '[{"label":"Unit test 1","month":2,"amount":100},{"label":"Half-yearly exam","month":5,"amount":150},{"label":"Unit test 2","month":8,"amount":100},{"label":"Unit test 3","month":11,"amount":100}]'::jsonb),
+('5cefb783-ce67-40e3-a4ff-e8e0439af715', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '2', '1d572bf4-d192-4aa9-b60b-3e61736ad9b5', 150, 'QUARTERLY', NULL),
+('6494a15d-aea6-4db7-a48e-ada3023b7372', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '8', 'e10325e4-b358-4908-8839-88cd645e5d04', 450, 'CUSTOM', '[{"label":"Unit test 1","month":2,"amount":100},{"label":"Half-yearly exam","month":5,"amount":150},{"label":"Unit test 2","month":8,"amount":100},{"label":"Unit test 3","month":11,"amount":100}]'::jsonb),
+('660f8893-6666-42b9-9b1b-cd665f38885f', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '8', '5e49a13e-463a-41b7-b68c-d0dd75b46f5e', 1500, 'MONTHLY', NULL),
+('678b2bda-d3a8-4fd5-83c4-a263d06433ce', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '8', 'f10afa70-07cd-455f-989a-db1225dd011c', 300, 'MONTHLY', NULL),
+('6a0a30c2-5132-4616-a52f-5d5e7d26b45d', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '11', 'f10afa70-07cd-455f-989a-db1225dd011c', 300, 'MONTHLY', NULL),
+('6eb53d90-152d-4bac-8be7-ba16d06d69b7', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '10', 'e10325e4-b358-4908-8839-88cd645e5d04', 450, 'CUSTOM', '[{"label":"Unit test 1","month":2,"amount":100},{"label":"Half-yearly exam","month":5,"amount":150},{"label":"Unit test 2","month":8,"amount":100},{"label":"Unit test 3","month":11,"amount":100}]'::jsonb),
+('70545da4-6ea9-4a34-86cb-8e5aecc9b19e', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '8', '1d572bf4-d192-4aa9-b60b-3e61736ad9b5', 150, 'QUARTERLY', NULL),
+('71eb232f-c293-43af-ae68-1a8eb8ce7d11', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '2', 'e10325e4-b358-4908-8839-88cd645e5d04', 450, 'CUSTOM', '[{"label":"Unit test 1","month":2,"amount":100},{"label":"Half-yearly exam","month":5,"amount":150},{"label":"Unit test 2","month":8,"amount":100},{"label":"Unit test 3","month":11,"amount":100}]'::jsonb),
+('73d7e8ea-2bb4-41a3-b045-d21614a87d7c', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '1', 'e10325e4-b358-4908-8839-88cd645e5d04', 450, 'CUSTOM', '[{"label":"Unit test 1","month":2,"amount":100},{"label":"Half-yearly exam","month":5,"amount":150},{"label":"Unit test 2","month":8,"amount":100},{"label":"Unit test 3","month":11,"amount":100}]'::jsonb),
+('80526ba7-ba1c-4597-853f-66eaf571d147', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '11', '1d572bf4-d192-4aa9-b60b-3e61736ad9b5', 150, 'QUARTERLY', NULL),
+('8425475f-3a98-47ee-9d5d-9e14b186ad4e', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '4', '1d572bf4-d192-4aa9-b60b-3e61736ad9b5', 150, 'QUARTERLY', NULL),
+('89059409-c4b2-49af-ae36-70d5d07738ee', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '9', 'e10325e4-b358-4908-8839-88cd645e5d04', 450, 'CUSTOM', '[{"label":"Unit test 1","month":2,"amount":100},{"label":"Half-yearly exam","month":5,"amount":150},{"label":"Unit test 2","month":8,"amount":100},{"label":"Unit test 3","month":11,"amount":100}]'::jsonb),
+('8a3be07c-b263-41d1-8a0b-dc930ae5a235', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '11', '5e49a13e-463a-41b7-b68c-d0dd75b46f5e', 1500, 'MONTHLY', NULL),
+('8cbfa5fd-2eb3-4418-a67c-2b29229d62ea', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '2', '5e49a13e-463a-41b7-b68c-d0dd75b46f5e', 1500, 'MONTHLY', NULL),
+('90468778-761b-4161-a82b-afb8916cd54f', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '1', '5e49a13e-463a-41b7-b68c-d0dd75b46f5e', 1500, 'MONTHLY', NULL),
+('9b781282-b896-4403-b811-46c4e66f23e8', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '2', 'f10afa70-07cd-455f-989a-db1225dd011c', 300, 'MONTHLY', NULL),
+('9c6e5c22-951e-4ef0-971b-f9d4b193f61c', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '5', 'e10325e4-b358-4908-8839-88cd645e5d04', 450, 'CUSTOM', '[{"label":"Unit test 1","month":2,"amount":100},{"label":"Half-yearly exam","month":5,"amount":150},{"label":"Unit test 2","month":8,"amount":100},{"label":"Unit test 3","month":11,"amount":100}]'::jsonb),
+('9f9e1890-5dab-4b0a-9f9b-fff20881785e', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '4', 'e10325e4-b358-4908-8839-88cd645e5d04', 450, 'CUSTOM', '[{"label":"Unit test 1","month":2,"amount":100},{"label":"Half-yearly exam","month":5,"amount":150},{"label":"Unit test 2","month":8,"amount":100},{"label":"Unit test 3","month":11,"amount":100}]'::jsonb),
+('ac1605e0-5c85-400a-84b4-b04639433f21', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '7', '5e49a13e-463a-41b7-b68c-d0dd75b46f5e', 1500, 'MONTHLY', NULL),
+('adb51778-5bb4-416b-8716-6fb9bcbbcd40', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '9', '5e49a13e-463a-41b7-b68c-d0dd75b46f5e', 1500, 'MONTHLY', NULL),
+('b0b8f682-d4e5-4379-9998-f8b697cdbba1', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '10', '1d572bf4-d192-4aa9-b60b-3e61736ad9b5', 150, 'QUARTERLY', NULL),
+('b3a33bbd-5042-44d1-88e2-3cd6ff9e914d', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '12', 'e10325e4-b358-4908-8839-88cd645e5d04', 450, 'CUSTOM', '[{"label":"Unit test 1","month":2,"amount":100},{"label":"Half-yearly exam","month":5,"amount":150},{"label":"Unit test 2","month":8,"amount":100},{"label":"Unit test 3","month":11,"amount":100}]'::jsonb),
+('b42f05e8-b0d8-4a86-9a3f-ccf61b6cc903', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '9', 'f10afa70-07cd-455f-989a-db1225dd011c', 300, 'MONTHLY', NULL),
+('b5d771f3-08b0-4ae0-960e-d585fd2768e2', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '6', 'f10afa70-07cd-455f-989a-db1225dd011c', 300, 'MONTHLY', NULL),
+('ba9ebf65-f476-491a-b812-92e3b73e61fa', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '6', '1d572bf4-d192-4aa9-b60b-3e61736ad9b5', 150, 'QUARTERLY', NULL),
+('c4283e08-1dbc-48a1-a979-fe311626ed7e', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '5', 'f10afa70-07cd-455f-989a-db1225dd011c', 300, 'MONTHLY', NULL),
+('cc5b35ca-062c-4c0a-8a5e-e814f51e8fef', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '4', 'f10afa70-07cd-455f-989a-db1225dd011c', 300, 'MONTHLY', NULL),
+('ccbbd2bf-bf6a-469d-a607-6c4a111de21d', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '1', 'f10afa70-07cd-455f-989a-db1225dd011c', 300, 'MONTHLY', NULL),
+('cf1fc65a-d346-49e6-9210-c8c16d42cc86', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '10', 'f10afa70-07cd-455f-989a-db1225dd011c', 300, 'MONTHLY', NULL),
+('d195e2c0-0ad4-4d83-a539-866679c476e7', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '4', '5e49a13e-463a-41b7-b68c-d0dd75b46f5e', 1500, 'MONTHLY', NULL),
+('dbfbe467-48e4-49fb-b0c8-7aa018be46d3', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '3', 'f10afa70-07cd-455f-989a-db1225dd011c', 300, 'MONTHLY', NULL),
+('e4724702-277a-4a6e-828b-880bad7c7210', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '5', '1d572bf4-d192-4aa9-b60b-3e61736ad9b5', 150, 'QUARTERLY', NULL),
+('e9cb6c30-7ee2-424c-b9b6-5774e040a13b', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '7', '1d572bf4-d192-4aa9-b60b-3e61736ad9b5', 150, 'QUARTERLY', NULL),
+('f291f351-98b4-41fe-a7f5-e212c22dbd4b', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '3', '1d572bf4-d192-4aa9-b60b-3e61736ad9b5', 150, 'QUARTERLY', NULL),
+('f2da4063-d239-4027-845a-0523c9360a4e', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', '6', 'e10325e4-b358-4908-8839-88cd645e5d04', 450, 'CUSTOM', '[{"label":"Unit test 1","month":2,"amount":100},{"label":"Half-yearly exam","month":5,"amount":150},{"label":"Unit test 2","month":8,"amount":100},{"label":"Unit test 3","month":11,"amount":100}]'::jsonb)
+ON CONFLICT DO NOTHING;
+INSERT INTO "Discount" ("id", "school_id", "name", "type", "value", "head_id", "is_active", "createdAt") VALUES
+('bc1983b2-f5c9-45b1-a768-620bdf2e8789', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'Merit scholarship (Rs 500 library)', 'FLAT', 500, '1d572bf4-d192-4aa9-b60b-3e61736ad9b5', true, '2026-10-09T10:08:49.545Z'),
+('ebadb9af-a546-4471-82ae-74d7e6b7d008', '4b010b82-adac-4be0-94e7-54b7fcb8ffec', 'Sibling discount (10% tuition)', 'PERCENT', 10, '5e49a13e-463a-41b7-b68c-d0dd75b46f5e', true, '2026-10-09T10:08:49.541Z')
+ON CONFLICT DO NOTHING;
+COMMIT;
