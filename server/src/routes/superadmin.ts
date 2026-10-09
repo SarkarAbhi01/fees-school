@@ -68,7 +68,11 @@ async function generateSchoolCode(name: string) {
 }
 
 const iso = (d: Date | null) => (d ? dateStr(d) : null);
-const shape = (s: any, extra: Record<string, unknown> = {}) => ({
+
+const shape = (
+  s: any,
+  extra: Record<string, unknown> = {}
+): Record<string, any> => ({
   id: s.id, name: s.name, code: s.code, is_active: s.is_active, createdAt: s.createdAt,
   address: s.address, city: s.city, state: s.state, pincode: s.pincode, mobile: s.mobile, email: s.email, contact_person: s.contact_person,
   plan_type: s.plan_type, plan_amount: s.plan_amount, plan_start: iso(s.plan_start), plan_end: iso(s.plan_end), plan_status: planStatus(s.plan_end),
@@ -229,7 +233,7 @@ async function schoolMetrics(q: Record<string, any>) {
       SELECT school_id, max(payment_date) AS last_payment FROM "FeePayment" WHERE school_id = ANY(${ids}) GROUP BY school_id`,
   ]);
   const fpM = new Map(fp.map((x) => [x.school_id, x])), atM = new Map(at.map((x) => [x.school_id, x])), lastM = new Map(last.map((x) => [x.school_id, x]));
-  const data = rows.map((s) => {
+  const data: Record<string, any>[] = rows.map((s) => {
     const f = fpM.get(s.id), a = atM.get(s.id);
     const present = n(a?.present), daysOpen = n(a?.days_open);
     const denom = s.students * daysOpen;
