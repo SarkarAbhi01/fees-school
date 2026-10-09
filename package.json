@@ -32,7 +32,8 @@
     "express": "^4.21.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.4.0",
-    "prisma": "^5.22.0"
+    "prisma": "^5.22.0",
+    "@types/node": "^20.19.43"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
